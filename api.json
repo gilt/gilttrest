@@ -1,0 +1,145 @@
+{
+  "imports" : [
+    {
+      "uri" : "http://www.apidoc.me/gilt/gilt-public-api/1.0.0/service.json"
+    }
+  ],
+
+  "name" : "gilt-trest",
+
+  "description" : "Gilt-trest Intern Starter Project API",
+
+  "apidoc": {
+    "version": "0.11.16"
+  },
+
+  "enums": {
+    "store": {
+      "values" : [
+        {
+          "name": "men"
+        },
+        {
+          "name": "women"
+        },
+        {
+          "name": "children"
+        },
+        {
+          "name": "home"
+        },
+        {
+          "name": "pinned"
+        }
+      ]
+    }
+  },
+
+  "models": {
+    "user": {
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "username", "type": "string" }
+      ]
+    },
+
+    "register_form" : {
+      "fields" : [
+        { "name": "name", "type": "string" },
+        { "name": "username", "type": "string" },
+        { "name": "password", "type": "string" }
+      ]
+    },
+
+    "login_form": {
+      "fields": [
+        { "name": "username", "type": "string" },
+        { "name" : "password", "type": "string" }
+      ]
+    },
+
+    "error": {
+      "fields": [
+        { "name": "error", "type": "string" }
+      ]
+    },
+
+    "sale": {
+      "fields": [
+        { "name": "pinned", "type": "boolean" },
+        { "name": "detail", "type": "[com.gilt.public.api.models.sale_detail]" }
+      ]
+    }
+  },
+
+  "resources": {
+    "store": {
+      "operations": [
+        {
+          "method" : "GET",
+          "path" : "/:store",
+          "parameters": [
+            {
+              "name": "store",
+              "type": "store"
+            }
+          ],
+          "responses": {
+            "200": {"type": "[sale]"},
+            "400": {"type": "error"},
+            "401": {"type": "error"}
+          }
+
+        }
+      ]
+    },
+
+    "sale": {
+      "operations": [
+        {
+          "method" : "PUT",
+          "path": "/:sale_key",
+          "parameters": [
+            {
+              "name": "sale_key",
+              "type": "string"
+            }
+          ],
+          "responses" : {
+            "200" : { "type": "sale" },
+            "400" : { "type": "error" },
+            "401": {"type": "error"}
+          }
+        }
+      ]
+    },
+
+    "user": {
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/register",
+          "body": {
+            "type": "register_form"
+          },
+          "responses": {
+            "201": { "type": "user" },
+            "400": {"type": "error"}
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/login",
+          "body": {
+            "type": "login_form"
+          },
+          "responses": {
+            "200": { "type": "user" },
+            "401": { "type": "error" }
+          }
+        }
+      ]
+    }
+  }
+
+}

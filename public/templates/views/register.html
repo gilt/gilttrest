@@ -1,0 +1,16 @@
+<div class="form-container">
+  <form>
+    <h3>Register now to start pinning sales!</h3>
+    <div class="form-group">
+      <label for="emailAddress">Email address</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email" ng-model="user.email">
+    </div>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="password" class="form-control" id="username" placeholder="Enter username" ng-model="user.username">
+    </div>
+    <button type="submit" class="btn btn-default" ng-click="register($event)">Submit</button>
+  </form>
+  <br>
+  <p>Already a member? <a href="/#/login">Login here</a></p>
+</div>

@@ -1,0 +1,14 @@
+<h1>Welcome to your pin list</h1>
+<ul>
+  <li><a href="#" ng-click="setFilterVal($event, 'men');">Men</a></li> |
+  <li><a href="#" ng-click="setFilterVal($event, 'women');">Women</a></li> |
+  <li><a href="#" ng-click="setFilterVal($event, 'home');">Home</a></li> |
+  <li><a href="#" ng-click="setFilterVal($event, 'kids');">Children</a></li> |
+  <li><a href="#" ng-click="setFilterVal($event);">Clear Filter</a></li>
+</ul>
+<ul class="sale-list">
+  <li class="sale-list-item" ng-repeat="sale in saleCollection | filter: customFilter">
+    <sale sale="sale" class="sale-container"></sale>
+  <li>
+</ul>
+

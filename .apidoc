@@ -1,0 +1,12 @@
+code:
+  gilt:
+    gilt-trest:
+      version: latest
+      generators:
+        play_2_4_client: app/clients
+        play_2_x_routes: conf/routes
+    gilt-public-api:
+      version: latest
+      generators:
+        play_2_4_client: app/clients
+

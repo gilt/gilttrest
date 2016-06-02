@@ -1,0 +1,12 @@
+<div class="sale-container col-md-4">
+  <a class="pin-btn btn btn-small btn-info" ng-click="pinIt()">PIN</a>
+  <img class="img-rounded"
+    ng-srcset="{{sale.image_urls['506x274'][0].url}} 506w
+               {{sale.image_urls['366x186'][0].url}} 336w
+               {{sale.image_urls['161x110'][0].url}} 161w"
+    ng-src="{{sale.image_urls['366x186'][0].url}}">
+  <h4>{{ sale.name }}</h4>
+  <p>{{ sale.description }}</p>
+  <span class="label">{{ sale.sale_key }}</span>
+  <span class="label">{{ sale.store }}</span>
+</div>
