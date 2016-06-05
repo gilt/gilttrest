@@ -1,9 +1,10 @@
 package controllers
 
 import javax.inject._
-import com.gilt.gilt.trest.v0.models.RegisterForm
+import com.gilt.gilt.trest.v0.models.{Error, RegisterForm}
 import com.gilt.gilt.trest.v0.models.json._
 import play.api._
+import play.api.libs.json.Json
 import play.api.mvc._
 import services.UserService
 
@@ -15,19 +16,22 @@ class Users @Inject() (userService: UserService)(implicit exec: ExecutionContext
 
   /**
     * Note: This is a very naive implementation of user registration and login
-    * that stores passwords at rest in plaintext. A big no no in production systems.
-    * @return
+    * that stores passwords in plaintext. A big no no in production systems.
     */
   def postRegister() = Action.async(parse.json[RegisterForm]) { request =>
     val username = request.body.username
     val name = request.body.name
     val password = request.body.password
 
-    Future(NotImplemented)
+    userService.create(name, username, password).map{ user =>
+      Ok(Json.toJson(user))
+    }
   }
 
   def postLogin() = Action.async {
     Future(NotImplemented)
   }
+
+  def badRequestFuture(msg: String): Future[Result] = Future.successful(BadRequest(Json.toJson(Error(msg))))
 
 }

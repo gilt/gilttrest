@@ -23,7 +23,7 @@ class Stores @Inject()
         Future.successful(NotImplemented)
       case _ =>
         giltClient.SaleList.getActiveJsonByStore(store.toString, giltApiKey).map { saleList =>
-          val sales = saleList.sales.map(Sale(true, _))
+          val sales = saleList.sales.map(Pin(true, _))
           Ok(Json.toJson(sales))
         }
     }

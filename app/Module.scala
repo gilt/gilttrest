@@ -3,7 +3,7 @@ import java.time.Clock
 
 import com.google.inject.name.Names
 import play.api.{Environment, Configuration}
-import services.ApplicationTimer
+import services.{PostgresUserService, UserService, ApplicationTimer}
 import com.gilt.public.api.{Client => GiltClient}
 
 /**
@@ -34,6 +34,7 @@ class Module(environment: Environment, configuration: Configuration) extends Abs
 
     bind(classOf[GiltClient]).toInstance(new GiltClient())
 
+    bind(classOf[UserService]).to(classOf[PostgresUserService])
   }
 
 }

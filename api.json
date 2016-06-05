@@ -64,7 +64,7 @@
       ]
     },
 
-    "sale": {
+    "pin": {
       "fields": [
         { "name": "pinned", "type": "boolean" },
         { "name": "detail", "type": "com.gilt.public.api.models.sale_detail" }
@@ -85,7 +85,7 @@
             }
           ],
           "responses": {
-            "200": {"type": "[sale]"},
+            "200": {"type": "[pin]"},
             "400": {"type": "error"},
             "401": {"type": "error"}
           }
@@ -94,7 +94,7 @@
       ]
     },
 
-    "sale": {
+    "pin": {
       "operations": [
         {
           "method" : "PUT",
@@ -106,7 +106,7 @@
             }
           ],
           "responses" : {
-            "200" : { "type": "sale" },
+            "200" : { "type": "pin" },
             "400" : { "type": "error" },
             "401": {"type": "error"}
           }
