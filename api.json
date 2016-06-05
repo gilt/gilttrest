@@ -67,7 +67,7 @@
     "sale": {
       "fields": [
         { "name": "pinned", "type": "boolean" },
-        { "name": "detail", "type": "[com.gilt.public.api.models.sale_detail]" }
+        { "name": "detail", "type": "com.gilt.public.api.models.sale_detail" }
       ]
     }
   },

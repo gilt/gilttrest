@@ -28,7 +28,7 @@ class AuthenticatedAction @Inject() (users: UserService) (implicit exec: Executi
         case "Basic" :: creds :: Nil =>
           new String(Base64.decodeBase64(creds.getBytes)).split(":").toList match {
             case username :: password :: Nil =>
-              users.getByUsernameAndPassword(username, password).flatMap {
+              users.get(username, password).flatMap {
                 case Some(user) => block(AuthenticatedRequest(user, request))
                 case _ => unauthorized
               }
