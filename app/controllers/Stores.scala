@@ -3,31 +3,60 @@ package controllers
 import javax.inject._
 import com.gilt.gilt.trest.v0.models._
 import com.gilt.gilt.trest.v0.models.json._
+import com.gilt.public.api.models.{Store => GiltStore}
 import models.AuthenticatedAction
 import org.joda.time.DateTime
 import play.api._
 import play.api.libs.json.Json
 import play.api.mvc._
+import services.PinService
 import scala.concurrent.{ExecutionContext, Future}
 import com.gilt.public.api.{Client => GiltClient}
 
 
 @Singleton
 class Stores @Inject()
-  (authAction: AuthenticatedAction, giltClient: GiltClient, @Named("gilt-api-key") giltApiKey: String)
-  (implicit exec: ExecutionContext) extends Controller
-{
+( authAction: AuthenticatedAction,
+  pinsService: PinService,
+  giltClient: GiltClient,
+  @Named("gilt-api-key") apiKey: String)
+(implicit exec: ExecutionContext) extends Controller {
 
-  def getByStore(store: Store) = authAction.async {
+  def getByStore(store: Store) = authAction.async { request =>
     store match {
       case Store.Pinned =>
-        Future.successful(NotImplemented)
+        getPinnedSales(request.user).map(sales => Ok(Json.toJson(sales)))
+      case store if asGiltStore(store).isDefined =>
+        getStoreSales(request.user, store).map(sales => Ok(Json.toJson(sales)))
       case _ =>
-        giltClient.SaleList.getActiveJsonByStore(store.toString, giltApiKey).map { saleList =>
-          val sales = saleList.sales.map(x => Pin("asdf", DateTime.now))
-          Ok(Json.toJson(sales))
-        }
+        Future.successful(badRequestWithError("Invalid Store"))
     }
   }
+
+  def getStoreSales(user: User, store: Store): Future[Seq[PinnedSale]] = {
+    for {
+      pins <- pinsService.find(user)
+      saleList <- giltClient.saleList.getActiveJsonByStore(store.toString, apiKey)
+    } yield {
+      val saleKeySet = pins.map(_.saleKey).toSet[String]
+      saleList.sales.map{ saleDetail =>
+        PinnedSale(saleKeySet.contains(saleDetail.saleKey), saleDetail)
+      }
+    }
+  }
+
+  def getPinnedSales(user: User): Future[Seq[PinnedSale]] = {
+    for {
+      pins <- pinsService.find(user)
+      saleList <- giltClient.saleList.getActiveJson(apiKey)
+    } yield {
+      val saleKeySet = pins.map(_.saleKey).toSet[String]
+      saleList.sales.collect{ case saleDetail if saleKeySet.contains(saleDetail.saleKey) => PinnedSale(true, saleDetail)}
+    }
+  }
+
+  def asGiltStore(store: Store): Option[GiltStore] = GiltStore.fromString(store.toString)
+
+  def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
 
 }

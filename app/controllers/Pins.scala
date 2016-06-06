@@ -15,7 +15,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class Pins @Inject()(authAction: AuthenticatedAction, pinsService: PinService, giltClient: GiltClient, @Named("gilt-api-key") apiKey: String)(implicit exec: ExecutionContext) extends Controller {
+class Pins @Inject()
+( authAction: AuthenticatedAction,
+  pinsService: PinService,
+  giltClient: GiltClient,
+  @Named("gilt-api-key") apiKey: String)(implicit exec: ExecutionContext) extends Controller
+{
 
 
   def putBySaleKey(saleKey: String) = authAction.async { request =>
