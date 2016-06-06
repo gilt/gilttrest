@@ -38,6 +38,7 @@
   "models": {
     "user": {
       "fields": [
+        { "name": "id", "type": "integer" },
         { "name": "name", "type": "string" },
         { "name": "username", "type": "string" }
       ]
@@ -65,6 +66,13 @@
     },
 
     "pin": {
+      "fields" : [
+        { "name" : "sale_key", "type": "string" },
+        { "name" : "expires_at", "type": "date-time-iso8601" }
+      ]
+    },
+
+    "pinned_sale": {
       "fields": [
         { "name": "pinned", "type": "boolean" },
         { "name": "detail", "type": "com.gilt.public.api.models.sale_detail" }
@@ -85,7 +93,7 @@
             }
           ],
           "responses": {
-            "200": {"type": "[pin]"},
+            "200": {"type": "[pinned_sale]"},
             "400": {"type": "error"},
             "401": {"type": "error"}
           }

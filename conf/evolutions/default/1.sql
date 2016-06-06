@@ -15,5 +15,5 @@ insert into users values (default, 'otto', 'ottoman', 'password123');
 
 # --- !Downs
 
-DROP TABLE Users;
+DROP TABLE users;
 

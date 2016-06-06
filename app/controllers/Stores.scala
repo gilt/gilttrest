@@ -4,6 +4,7 @@ import javax.inject._
 import com.gilt.gilt.trest.v0.models._
 import com.gilt.gilt.trest.v0.models.json._
 import models.AuthenticatedAction
+import org.joda.time.DateTime
 import play.api._
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -17,13 +18,13 @@ class Stores @Inject()
   (implicit exec: ExecutionContext) extends Controller
 {
 
-  def getByStore(store: Store) =Action.async {
+  def getByStore(store: Store) = authAction.async {
     store match {
       case Store.Pinned =>
         Future.successful(NotImplemented)
       case _ =>
         giltClient.SaleList.getActiveJsonByStore(store.toString, giltApiKey).map { saleList =>
-          val sales = saleList.sales.map(Pin(true, _))
+          val sales = saleList.sales.map(x => Pin("asdf", DateTime.now))
           Ok(Json.toJson(sales))
         }
     }
