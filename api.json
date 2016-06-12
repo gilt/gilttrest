@@ -23,7 +23,7 @@
           "name": "women"
         },
         {
-          "name": "children"
+          "name": "kids"
         },
         {
           "name": "home"
@@ -106,6 +106,21 @@
       "operations": [
         {
           "method" : "PUT",
+          "path": "/:sale_key",
+          "parameters": [
+            {
+              "name": "sale_key",
+              "type": "string"
+            }
+          ],
+          "responses" : {
+            "200" : { "type": "pin" },
+            "400" : { "type": "error" },
+            "401": {"type": "error"}
+          }
+        },
+        {
+          "method" : "DELETE",
           "path": "/:sale_key",
           "parameters": [
             {

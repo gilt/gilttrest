@@ -4,46 +4,53 @@
 
 var angular = require('angular');
 
-var loginController = function loginController ($scope, $location, apiRequest) {
-  $scope.user = {'username' : undefined};
+var loginController = function loginController ($scope, $location, apiRequest, dataStore) {
+  $scope.user = {'name': undefined, 'username' : undefined, 'password' : undefined};
 
   $scope.login = function register ($ev) {
     $ev.preventDefault();
     // NOTE: this == $scope
 
     apiRequest.login($scope.user).
-    then(function successFn (nextUrl) {
-      $location.path(nextUrl);
+    then(function successFn (response) {
+      dataStore.set('name', response.data.username);
+      dataStore.set('username', $scope.user.username);
+      dataStore.set('password', $scope.user.password);
+      $location.path('/sales/women');
     }, function errorFn (error) {
-      // TODO: add error handling
+      alert("Login Failed!")
     });
   };
 
 };
 
-var registerController = function registerController ($scope, $location, apiRequest) {
-  $scope.user = {'username' : undefined, 'email' : undefined };
+var registerController = function registerController ($scope, $location, apiRequest, dataStore) {
+  $scope.user = {'name': undefined, 'username' : undefined, 'password' : undefined};
 
   $scope.register = function register ($ev) {
     $ev.preventDefault();
     // NOTE: this == $scope
 
     apiRequest.register($scope.user).
-    then(function success (nextUrl) {
-      $location.path(nextUrl);
+    then(function success (response) {
+        dataStore.set('name', $scope.user.name);
+        dataStore.set('username', $scope.user.username);
+        dataStore.set('password', $scope.user.password);
+        $location.path('/sales/women');
     }, function errorFn (error) {
-      // TODO: add error handling
+        alert("Failed to register user")
     });
   };
 };
 
 module.exports = angular.module('login', [
 	require('angular-route'),
-	require('../services/requests').name
+	require('../services/requests').name,
+	require('../services/data').name
 ])
 
-.controller('loginCtrl', ['$scope', '$location', 'apiRequest', loginController])
-.controller('registerCtrl', ['$scope', '$location', 'apiRequest', registerController])
+.controller('loginCtrl', ['$scope', '$location', 'apiRequest', 'dataStore', loginController])
+.controller('registerCtrl', ['$scope', '$location', 'apiRequest', 'dataStore', registerController])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/login', {

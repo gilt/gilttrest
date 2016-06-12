@@ -2,8 +2,9 @@
 
 var angular = require('angular');
 
-var userUrlBase = '/users';
-var saleUrlBase = '/sales';
+var userUrlBase = 'api/users';
+var storeUrlBase = 'api/stores';
+var pinUrlBase = 'api/pins';
 
 module.exports = angular.module('request', [])
   .service('apiRequest', function($http, $log, $location) {
@@ -15,63 +16,32 @@ module.exports = angular.module('request', [])
         method: 'POST',
         url : url,
         data : userForm
-      }).
-      success(function (resp, status, headers, config) {
-        $log.debug(resp.data);
-        $http.defaults.headers.common.username = resp.username;
-        return saleUrlBase + '/women';
-      }).
-      error(function (error, status, headers, config) {
-        $log.debug(error);
-        $http.defaults.headers.common.username = undefined;
-        return error;
-      });
+      })
     }
 
-    function register (userObject) {
+    function register (userForm) {
       var url = userUrlBase + '/register';
 
       return $http({
         method: 'POST',
         url : url,
-        data : userObject
-      }).
-      success(function (resp, status, headers, config) {
-        $log.debug(resp.data);
-        $http.defaults.headers.common.username = resp.username;
-        return saleUrlBase + '/women';
-      }).
-      error(function (error, status, headers, config) {
-        $log.debug(error);
-        return error;
-      });
+        data : userForm
+      })
     }
 
-    function storeView (storeKey) {
-      var url = saleUrlBase + '/' + storeKey;
+    function storeView (storeKey, authToken) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + authToken;
+      var url = storeUrlBase + '/' + storeKey;
 
-      $http.defaults.headers.common.username = 'kyle';
 
       return $http({
         method: 'GET',
         url : url
-      }).
-      success(function (resp, status, headers, config) {
-        $log.debug(resp);
-        return resp.sales;
-      }).
-      error(function (error, status, headers, config) {
-        $log.debug(error);
-
-        if (status === 403) {
-          $location.path('/register');
-        }
-
-        return error;
-      });
+      })
     }
 
-    function pinList () {
+    function pinList (authToken) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + authToken;
       var url = saleUrlBase + '/pinned';
 
       return $http({
@@ -93,21 +63,14 @@ module.exports = angular.module('request', [])
       });
     }
 
-    function pinSale (saleKey) {
+    function pinSale (saleKey, authToken) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + authToken;
       var url = saleUrlBase + '/' + saleKey + '/pin';
 
       return $http({
         method: 'GET',
         url : url
-      }).
-      success(function (resp, status, headers, config) {
-        $log.debug(resp);
-        return resp;
-      }).
-      error(function (error, status, headers, config) {
-        $log.debug(error);
-        return error;
-      });
+      })
     }
 
     return {
