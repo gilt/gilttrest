@@ -1,7 +1,7 @@
 package services
 
 
-import com.gilt.gilt.trest.v0.models.User
+import com.gilt.gilt.trest.v1.models.User
 
 
 import scala.concurrent.{Future, ExecutionContext}

@@ -1,8 +1,8 @@
 package controllers
 
 import javax.inject._
-import com.gilt.gilt.trest.v0.models.{LoginForm, Error, RegisterForm}
-import com.gilt.gilt.trest.v0.models.json._
+import com.gilt.gilt.trest.v1.models.{LoginForm, Error, RegisterForm}
+import com.gilt.gilt.trest.v1.models.json._
 import play.api._
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -37,6 +37,6 @@ class Users @Inject() (userService: UserService)(implicit exec: ExecutionContext
 
   }
 
-  def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
+  private def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
 
 }

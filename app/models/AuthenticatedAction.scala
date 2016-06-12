@@ -10,8 +10,8 @@ import services.UserService
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
-import com.gilt.gilt.trest.v0.models._
-import com.gilt.gilt.trest.v0.models.json._
+import com.gilt.gilt.trest.v1.models._
+import com.gilt.gilt.trest.v1.models.json._
 
 import play.api.mvc.{Request, WrappedRequest}
 

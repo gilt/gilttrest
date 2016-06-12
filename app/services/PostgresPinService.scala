@@ -4,7 +4,7 @@ package services
 import java.sql.Timestamp
 import javax.inject.Inject
 
-import com.gilt.gilt.trest.v0.models.{Pin, User}
+import com.gilt.gilt.trest.v1.models.{Pin, User}
 import com.gilt.public.api.models.SaleDetail
 import org.joda.time.DateTime
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -45,6 +45,11 @@ class PostgresPinService @Inject() (protected val dbConfigProvider: DatabaseConf
       }
     }
 
+  }
+
+  override def delete(user:User, saleKey: String)(implicit ec: ExecutionContext): Future[Int] = {
+    val query = pins.filter(pin => pin.user_id === user.id && pin.sale_key === saleKey)
+    db.run(query.delete)
   }
 
 

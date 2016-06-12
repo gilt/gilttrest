@@ -1,7 +1,7 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-import com.gilt.gilt.trest.v0.models.User
+import com.gilt.gilt.trest.v1.models.User
 import play.api.db.slick.{HasDatabaseConfigProvider, DatabaseConfigProvider}
 import slick.driver.JdbcProfile
 

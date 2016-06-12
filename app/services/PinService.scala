@@ -1,6 +1,6 @@
 package services
 
-import com.gilt.gilt.trest.v0.models.{Pin, User}
+import com.gilt.gilt.trest.v1.models.{Pin, User}
 import com.gilt.public.api.models.SaleDetail
 import org.joda.time.DateTime
 
@@ -14,5 +14,7 @@ trait PinService {
   def upsert(user: User, sale: SaleDetail)(implicit ec: ExecutionContext): Future[Pin]
 
   def find(user: User, date: DateTime = DateTime.now)(implicit ec: ExecutionContext): Future[Seq[Pin]]
+
+  def delete(user: User, saleKey: String)(implicit ec: ExecutionContext): Future[Int]
 
 }

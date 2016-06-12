@@ -4,17 +4,32 @@
 
 var angular = require('angular');
 
-var saleController = function saleController ($scope, apiRequest) {
+var saleController = function saleController ($scope, apiRequest, dataStore) {
   // $scope.sale made avalible by storeController scope
 
-  $scope.pinIt = function pinIt (ev) {
+  $scope.pinIt = function(ev) {
+    var username = dataStore.get('username')
+    var password = dataStore.get('password')
+    var authToken = btoa(username + ":" + password)
 
-    apiRequest.pinSale(this.sale.sale_key).then(
+    apiRequest.pinSale(this.sale.detail.sale_key, authToken).then(
       function successFn (saleResp) {
-        alert('Success! Added ' + saleResp.data.name + ' to your pin list!');
+        $scope.sale.pinned = true
       }, function errorFn (error) {
-        // TODO: Add error handling.
-      });
+        alert("Error pinning sale")
+    });
+  };
+
+  $scope.unpinIt = function(ev) {
+    var username = dataStore.get('username')
+    var password = dataStore.get('password')
+    var authToken = btoa(username + ":" + password)
+    apiRequest.unpinSale(this.sale.detail.sale_key, authToken).then(
+      function successFn (saleResp) {
+        $scope.sale.pinned = false
+      }, function errorFn (error) {
+        alert("Error pinning sale")
+    });
   };
 };
 
@@ -29,9 +44,12 @@ var saleDirective = function saleDirective () {
   };
 };
 
-module.exports = angular.module('sale', [require('../services/requests').name])
+module.exports = angular.module('sale', [
+    require('../services/requests').name,
+    require('../services/data').name
+])
 
-.controller('saleCtrl', ['$scope', 'apiRequest', saleController])
+.controller('saleCtrl', ['$scope', 'apiRequest', 'dataStore', saleController])
 
 .directive('sale', saleDirective);
 

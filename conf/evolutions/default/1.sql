@@ -11,7 +11,7 @@ CREATE TABLE users (
 
 create unique index on users(username);
 
-insert into users values (default, 'otto', 'ottoman', 'password123');
+insert into users values (default, 'test', 'test', 'test');
 
 # --- !Downs
 

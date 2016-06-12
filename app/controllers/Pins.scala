@@ -1,8 +1,8 @@
 package controllers
 
 import javax.inject._
-import com.gilt.gilt.trest.v0.models.Error
-import com.gilt.gilt.trest.v0.models.json._
+import com.gilt.gilt.trest.v1.models.Error
+import com.gilt.gilt.trest.v1.models.json._
 import com.gilt.public.api.{Client => GiltClient}
 import models.AuthenticatedAction
 import play.api._
@@ -35,6 +35,17 @@ class Pins @Inject()
     }
   }
 
-  def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
+  def deleteBySaleKey(saleKey: String) = authAction.async { request =>
+    val user = request.user
+    pinsService.delete(user, saleKey).map{ result =>
+      if(result >= 0)
+        Ok(Json.obj("numDeleted" -> result))
+      else
+        badRequestWithError(s"Failed to delete ${saleKey}")
+    }
+
+  }
+
+  private def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
 
 }

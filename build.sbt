@@ -7,7 +7,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.7"
 
 routesImport ++= Seq(
-  "com.gilt.gilt.trest.v0.Bindables._"
+  "com.gilt.gilt.trest.v1.Bindables._"
 )
 
 libraryDependencies ++= Seq(

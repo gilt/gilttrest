@@ -1,5 +1,5 @@
 <div class="sale-container col-md-4">
-  <a class="pin-btn btn btn-small btn-warn" ng-show="sale.pinned" ng-click="unpinIt()">UNPIN</a>
+  <a class="pin-btn btn btn-small btn-danger" ng-show="sale.pinned" ng-click="unpinIt()">UNPIN</a>
   <a class="pin-btn btn btn-small btn-info" ng-show="!sale.pinned" ng-click="pinIt()">PIN</a>
   <img class="img-rounded"
     ng-srcset="{{sale.detail.image_urls['506x274'][0].url}} 506w

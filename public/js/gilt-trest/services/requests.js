@@ -42,33 +42,30 @@ module.exports = angular.module('request', [])
 
     function pinList (authToken) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + authToken;
-      var url = saleUrlBase + '/pinned';
+      var url = storeUrlBase + '/pinned';
 
       return $http({
         method: 'GET',
         url : url
-      }).
-      success(function (resp, status, headers, config) {
-        $log.debug(resp.sales);
-        return resp.sales;
-      }).
-      error(function (error, status, headers, config) {
-        $log.debug(error);
-
-        if (status === 403) {
-          $location.path('/register');
-        }
-
-        return error;
       });
     }
 
     function pinSale (saleKey, authToken) {
       $http.defaults.headers.common['Authorization'] = 'Basic ' + authToken;
-      var url = saleUrlBase + '/' + saleKey + '/pin';
+      var url = pinUrlBase + '/' + saleKey;
 
       return $http({
-        method: 'GET',
+        method: 'PUT',
+        url : url
+      })
+    }
+
+    function unpinSale(saleKey, authToken) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + authToken;
+      var url = pinUrlBase + '/' + saleKey;
+
+      return $http({
+        method: 'DELETE',
         url : url
       })
     }
@@ -78,7 +75,8 @@ module.exports = angular.module('request', [])
       register  : register,
       storeView : storeView,
       pinList   : pinList,
-      pinSale   : pinSale
+      pinSale   : pinSale,
+      unpinSale : unpinSale
     };
 
   });

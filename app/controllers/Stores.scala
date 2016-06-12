@@ -1,8 +1,8 @@
 package controllers
 
 import javax.inject._
-import com.gilt.gilt.trest.v0.models._
-import com.gilt.gilt.trest.v0.models.json._
+import com.gilt.gilt.trest.v1.models._
+import com.gilt.gilt.trest.v1.models.json._
 import com.gilt.public.api.models.{Store => GiltStore}
 import models.AuthenticatedAction
 import org.joda.time.DateTime
@@ -33,30 +33,30 @@ class Stores @Inject()
     }
   }
 
-  def getStoreSales(user: User, store: Store): Future[Seq[PinnedSale]] = {
+  private def getStoreSales(user: User, store: Store): Future[Seq[PinnedSale]] = {
     for {
       pins <- pinsService.find(user)
       saleList <- giltClient.saleList.getActiveJsonByStore(store.toString, apiKey)
     } yield {
       val saleKeySet = pins.map(_.saleKey).toSet[String]
-      saleList.sales.map{ saleDetail =>
+      saleList.sales.sortBy(_.saleKey).map{ saleDetail =>
         PinnedSale(saleKeySet.contains(saleDetail.saleKey), saleDetail)
       }
     }
   }
 
-  def getPinnedSales(user: User): Future[Seq[PinnedSale]] = {
+  private def getPinnedSales(user: User): Future[Seq[PinnedSale]] = {
     for {
       pins <- pinsService.find(user)
       saleList <- giltClient.saleList.getActiveJson(apiKey)
     } yield {
       val saleKeySet = pins.map(_.saleKey).toSet[String]
-      saleList.sales.collect{ case saleDetail if saleKeySet.contains(saleDetail.saleKey) => PinnedSale(true, saleDetail)}
+      saleList.sales.collect{ case saleDetail if saleKeySet.contains(saleDetail.saleKey) => PinnedSale(true, saleDetail)}.sortBy(_.detail.saleKey)
     }
   }
 
-  def asGiltStore(store: Store): Option[GiltStore] = GiltStore.fromString(store.toString)
+  private def asGiltStore(store: Store): Option[GiltStore] = GiltStore.fromString(store.toString)
 
-  def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
+  private def badRequestWithError(msg: String): Result = BadRequest(Json.toJson(Error(msg)))
 
 }
