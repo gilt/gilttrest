@@ -16,14 +16,13 @@ import scala.concurrent.{Future, ExecutionContext}
 class PostgresPinService @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends PinService with PinSchema with UserSchema with HasDatabaseConfigProvider[JdbcProfile] {
   import driver.api._
 
-  override def upsert(user: User, sale: SaleDetail)(implicit ec: ExecutionContext): Future[Pin] = {
-    val expiresAt  = asTimestamp(sale.ends.get)
+  override def upsert(user: User, saleKey: String, date: DateTime)(implicit ec: ExecutionContext): Future[Pin] = {
 
-    val findAction = pins.filter(p => p.sale_key === sale.saleKey && p.user_id === user.id).result.map(_.headOption)
+    val findAction = pins.filter(p => p.sale_key === saleKey && p.user_id === user.id).result.map(_.headOption)
 
     val updateAction = findAction.flatMap{
       case Some(sale) => DBIO.successful(sale)
-      case None => (pins returning pins.map(_.id) into ((pin,id) => pin.copy(id=id))) += PinRow(-1, user.id, sale.saleKey, expiresAt)
+      case None => (pins returning pins.map(_.id) into ((pin,id) => pin.copy(id=id))) += PinRow(-1, user.id, saleKey, asTimestamp(date))
     }
 
     db.run(updateAction).map{ pin =>

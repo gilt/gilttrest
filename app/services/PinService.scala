@@ -11,7 +11,7 @@ import scala.concurrent.{Future, ExecutionContext}
   */
 trait PinService {
 
-  def upsert(user: User, sale: SaleDetail)(implicit ec: ExecutionContext): Future[Pin]
+  def upsert(user: User, sale: String, date: DateTime)(implicit ec: ExecutionContext): Future[Pin]
 
   def find(user: User, date: DateTime = DateTime.now)(implicit ec: ExecutionContext): Future[Seq[Pin]]
 

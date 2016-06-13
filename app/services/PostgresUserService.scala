@@ -18,10 +18,15 @@ class PostgresUserService @Inject() (protected val dbConfigProvider: DatabaseCon
   }
 
   override def find(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = {
-    val result = db.run(users.filter { user => user.username === username.toLowerCase && user.password === password.toLowerCase }.result)
+    val result = db.run(users.filter { user => user.username === username && user.password === password }.result)
     result.map(_.headOption.map { row => User(row.id, row.name, row.username) })
   }
 
+  // Used only for unit testing
+  def delete(userId: Int)(implicit ec: ExecutionContext): Future[Int] = {
+    val query = users.filter(user => user.id === userId)
+    db.run(query.delete)
+  }
 
 }
 

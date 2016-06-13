@@ -22,13 +22,6 @@ class Module(environment: Environment, configuration: Configuration) extends Abs
     // Use the system clock as the default implementation of Clock
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone)
 
-    // Ask Guice to create an instance of ApplicationTimer when the
-    // application starts.
-    bind(classOf[ApplicationTimer]).asEagerSingleton()
-
-
-    val maxItemsInList = configuration.getInt("max-identifiers-in-list").getOrElse(100)
-
     val apiKey = configuration.getString("gilt-api-key").get
     bind(classOf[String]).annotatedWith(Names.named("gilt-api-key")).toInstance(apiKey)
 

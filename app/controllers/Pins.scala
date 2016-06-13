@@ -30,7 +30,7 @@ class Pins @Inject()
     }
 
     sale.flatMap{
-      case Some(saleDetail) => pinsService.upsert(user, saleDetail).map(pin => Ok(Json.toJson(pin)))
+      case Some(saleDetail) => pinsService.upsert(user, saleDetail.saleKey, saleDetail.ends.get).map(pin => Ok(Json.toJson(pin)))
       case None => Future.successful(badRequestWithError("Sale key not found"))
     }
   }
