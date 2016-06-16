@@ -34,25 +34,17 @@ class Stores @Inject()
   }
 
   private def getStoreSales(user: User, store: Store): Future[Seq[PinnedSale]] = {
-    for {
-      pins <- pinsService.find(user)
-      saleList <- giltClient.saleList.getActiveJsonByStore(store.toString, apiKey)
-    } yield {
-      val saleKeySet = pins.map(_.saleKey).toSet[String]
-      saleList.sales.sortBy(_.saleKey).map{ saleDetail =>
-        PinnedSale(saleKeySet.contains(saleDetail.saleKey), saleDetail)
-      }
-    }
+
+    //TODO:  Construct a list of PinnedSales for this user and store
+    //TODO:  Sort the resulting list by sale key
+    //HINT:  You will need to merge the results of the API (GiltClient) call with the PinService (DB) call
+
+    Future.successful(Seq.empty[PinnedSale])
   }
 
   private def getPinnedSales(user: User): Future[Seq[PinnedSale]] = {
-    for {
-      pins <- pinsService.find(user)
-      saleList <- giltClient.saleList.getActiveJson(apiKey)
-    } yield {
-      val saleKeySet = pins.map(_.saleKey).toSet[String]
-      saleList.sales.collect{ case saleDetail if saleKeySet.contains(saleDetail.saleKey) => PinnedSale(true, saleDetail)}.sortBy(_.detail.saleKey)
-    }
+    //TODO:  Construct a list of PinnedSales for this user across all stores filters by PinnedSale.pinned = true
+    Future.successful(Seq.empty[PinnedSale])
   }
 
   private def asGiltStore(store: Store): Option[GiltStore] = GiltStore.fromString(store.toString)

@@ -25,24 +25,19 @@ class Pins @Inject()
 
   def putBySaleKey(saleKey: String) = authAction.async { request =>
     val user = request.user
-    val sale = giltClient.saleList.getActiveJson(apiKey).map{ saleDetail =>
-      saleDetail.sales.find(_.saleKey == saleKey)
-    }
 
-    sale.flatMap{
-      case Some(saleDetail) => pinsService.upsert(user, saleDetail.saleKey).map(pin => Ok(Json.toJson(pin)))
-      case None => Future.successful(badRequestWithError("Sale key not found"))
-    }
+    // TODO: Determine if saleKey is found, and create/save the pin.  Return BadRequest if sale isn't found.
+
+    Future.successful(NotImplemented)
+
   }
 
   def deleteBySaleKey(saleKey: String) = authAction.async { request =>
     val user = request.user
-    pinsService.delete(user, saleKey).map{ result =>
-      if(result >= 0)
-        Ok(Json.obj("numDeleted" -> result))
-      else
-        badRequestWithError(s"Failed to delete ${saleKey}")
-    }
+
+    //  TODO: Delete the pin with the provided saleKey and user
+
+    Future.successful(NotImplemented)
 
   }
 
