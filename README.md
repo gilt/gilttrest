@@ -44,7 +44,7 @@ You should now be able to connect to your database: `psql -U gilt-trest-user -d 
 
 ## Git Clone the Starter Project
 
-Clone the GiltTrest repo using `git clone foo`.  This is a standard Play framework file structure created with the `activator new` command.  Take a minute to read through [Anatomy of a Play Application](https://www.playframework.com/documentation/2.5.x/Anatomy).
+Clone the GiltTrest repo located [here](https://github.com/gilt/gilttrest/tree/implement).  This is a standard Play framework file structure created with the `activator new` command.  Take a minute to read through [Anatomy of a Play Application](https://www.playframework.com/documentation/2.5.x/Anatomy).
 
 Unique to Gilt is the `api.json` and `.apidoc` files.  This first is used by api-doc to describe the API and generate documentation/clients.  You can see the documented created by this api.json file [here](http://apidoc.me/gilt/gilt-trest/latest).  Take a moment to familiarize yourself with the syntax.  It is pretty self explanatory.
 
