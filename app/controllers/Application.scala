@@ -14,4 +14,8 @@ class Application @Inject() extends Controller {
     Ok(views.html.index())
   }
 
+  def ping = Action {
+    Ok("Pong")
+  }
+
 }

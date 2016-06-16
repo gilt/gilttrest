@@ -4,6 +4,8 @@
 
 # Static Assets
 GET     /                         @controllers.Application.index
+GET     /healthcheck/ping         @controllers.Application.ping
 GET     /assets/*file             @controllers.Assets.at(path="/public", file)
+
 
 
