@@ -22,10 +22,9 @@ class PostgresUserService @Inject() (protected val dbConfigProvider: DatabaseCon
     result.map(_.headOption.map { row => User(row.id, row.name, row.username) })
   }
 
-  // Used only for unit testing
-  def delete(userId: Int)(implicit ec: ExecutionContext): Future[Int] = {
-    val query = users.filter(user => user.id === userId)
-    db.run(query.delete)
+  // Used for testing only
+  def deleteAll(implicit ec: ExecutionContext): Future[Int] = {
+    db.run(users.delete)
   }
 
 }

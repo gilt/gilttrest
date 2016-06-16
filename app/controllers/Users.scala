@@ -22,8 +22,9 @@ class Users @Inject() (userService: UserService)(implicit exec: ExecutionContext
     val name = request.body.name
     val password = request.body.password
 
-    userService.create(name, username, password).map{ user =>
-      Ok(Json.toJson(user))
+    userService.find(username, password).flatMap{
+      case Some(user) => Future.successful(badRequestWithError("User already exists"))
+      case None => userService.create(name, username, password).map(user => Ok(Json.toJson(user)))
     }
   }
 

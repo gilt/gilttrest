@@ -11,10 +11,10 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{TestData, BeforeAndAfter}
 import org.scalatestplus.play._
 import org.scalatest.concurrent.ScalaFutures
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsJson, AnyContentAsEmpty}
 import play.api.test._
 import play.api.test.Helpers._
 import services.{PostgresPinService, PostgresUserService}
@@ -60,15 +60,66 @@ class AppSpec extends PlaySpec with OneAppPerTest  with BeforeAndAfter with Scal
     .build()
 
   before {
+    userService.deleteAll
     user = userService.create(name="testy", username="testyMcTestFace", password="test123").futureValue
   }
 
   after {
-    userService.delete(user.id)
+    userService.deleteAll
   }
 
-
   val authorizationHeader = List("Authorization" -> s"Basic ${new BASE64Encoder().encode("testyMcTestFace:test123".getBytes)}")
+
+
+
+  "Users" when {
+    val headers = List("Content-Type" -> "application/json")
+
+    "Registering" should {
+
+      "return error if all fields are not present when registering" in {
+        val json = Json.parse("""{"username" : "foo", "name" : "bar"}""")
+
+        val result = route(app, FakeRequest(POST, "/api/users/register", FakeHeaders(headers), json)).get
+        status(result) mustBe BAD_REQUEST
+      }
+
+      "return error if user already exists" in {
+        val json = Json.parse("""{"username" : "testyMcTestFace", "name" : "testy", "password" : "test123"}""")
+        val result = route(app, FakeRequest(POST, "/api/users/register", FakeHeaders(headers), json)).get
+        status(result) mustBe BAD_REQUEST
+      }
+
+      "return success otherwise" in {
+        val json = Json.parse("""{"username" : "foo", "name" : "bar", "password" : "baz"}""")
+        val result = route(app, FakeRequest(POST, "/api/users/register", FakeHeaders(headers), json)).get
+        status(result) mustBe OK
+        userService.find("foo", "baz").futureValue.isDefined mustBe true
+      }
+
+    }
+
+    "Logging In" should {
+      "return error if all fields are not present when registering" in {
+        val json = Json.parse("""{"username" : "foo"}""")
+
+        val result = route(app, FakeRequest(POST, "/api/users/login", FakeHeaders(headers), json)).get
+        status(result) mustBe BAD_REQUEST
+      }
+
+      "return error if user not found in " in {
+        val json = Json.parse("""{"username" : "foo", "password" : "bar"}""")
+        val result = route(app, FakeRequest(POST, "/api/users/login", FakeHeaders(headers), json)).get
+        status(result) mustBe BAD_REQUEST
+      }
+
+      "return success otherwise" in {
+        val json = Json.parse("""{"username" : "testyMcTestFace", "password" : "test123"}""")
+        val result = route(app, FakeRequest(POST, "/api/users/login", FakeHeaders(headers), json)).get
+        status(result) mustBe OK
+      }
+    }
+  }
 
   "Pins" should {
 
@@ -78,13 +129,11 @@ class AppSpec extends PlaySpec with OneAppPerTest  with BeforeAndAfter with Scal
     }
 
     "returns error on invalid sale name" in {
-      val authorizationHeader = List("Authorization" -> s"Basic ${new BASE64Encoder().encode("testyMcTestFace:test123".getBytes)}")
       val result = route(app, FakeRequest(PUT, "/api/pins/foo", FakeHeaders(authorizationHeader), AnyContentAsEmpty)).get
       status(result) mustBe BAD_REQUEST
     }
 
     "returns success on valid sale name" in {
-      val authorizationHeader = List("Authorization" -> s"Basic ${new BASE64Encoder().encode("testyMcTestFace:test123".getBytes)}")
       val result = route(app, FakeRequest(PUT, "/api/pins/10-crosby-derek-lam-6510", FakeHeaders(authorizationHeader), AnyContentAsEmpty)).get
       status(result) mustBe OK
       pinService.find(user).futureValue.head.saleKey mustBe "10-crosby-derek-lam-6510"
