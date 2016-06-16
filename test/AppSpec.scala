@@ -158,7 +158,7 @@ class AppSpec extends PlaySpec with OneAppPerTest  with BeforeAndAfter with Scal
     }
 
     "returns true when a sale is pinned" in {
-      pinService.upsert(user, "10-crosby-derek-lam-6510", DateTime.now()).futureValue
+      pinService.upsert(user, "10-crosby-derek-lam-6510").futureValue
       val result = route(app, FakeRequest(GET, "/api/stores/men", FakeHeaders(authorizationHeader), AnyContentAsEmpty)).get
       contentAsString(result) contains "true"
     }

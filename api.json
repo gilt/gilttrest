@@ -67,8 +67,7 @@
 
     "pin": {
       "fields" : [
-        { "name" : "sale_key", "type": "string" },
-        { "name" : "expires_at", "type": "date-time-iso8601" }
+        { "name" : "sale_key", "type": "string" }
       ]
     },
 
